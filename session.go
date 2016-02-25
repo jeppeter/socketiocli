@@ -2,6 +2,7 @@ package socketiocli
 
 import (
 	"errors"
+	logging "github.com/jeppeter/go-logging"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -20,12 +21,16 @@ type Session struct {
 
 // NewSession receives the configuraiton variables from the socket.io
 // server.
-func NewSession(url string) (*Session, error) {
-	urlParser, err := newURLParser(url)
+func NewSession(urls string) (*Session, error) {
+	urlParser, err := newURLParser(urls)
 	if err != nil {
+		logging.Errorf("error %s", err.Error())
 		return nil, err
 	}
-	response, err := http.Get(urlParser.handshake())
+
+	shakequery := urlParser.handshake()
+	logging.Debugf("shakequery %s", shakequery)
+	response, err := http.PostForm(shakequery,url.Values{''})
 	if err != nil {
 		return nil, err
 	}

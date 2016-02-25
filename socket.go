@@ -3,6 +3,7 @@
 package socketiocli
 
 import (
+	logging "github.com/jeppeter/go-logging"
 	"time"
 )
 
@@ -17,6 +18,7 @@ type Socket struct {
 func DialAndConnect(url string, channel string, query string) (*Socket, error) {
 	socket, err := Dial(url)
 	if err != nil {
+		logging.Errorf("can not connect (%s) error (%s)", url, err.Error())
 		return nil, err
 	}
 

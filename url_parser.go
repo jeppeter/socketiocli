@@ -24,7 +24,9 @@ func newURLParser(raw string) (*urlParser, error) {
 }
 
 func (u *urlParser) handshake() string {
-	return fmt.Sprintf("%s/socket.io/1", u.parsed.String())
+	cfg := newSocketIoConfig()
+	return fmt.Sprintf("%s/socket.io/?%s", u.parsed.String(), cfg.FormatQuery())
+	//return fmt.Sprintf("%s/socket.io/1", u.parsed.String())
 }
 
 func (u *urlParser) websocket(sessionId string) string {
