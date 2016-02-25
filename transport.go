@@ -1,4 +1,4 @@
-package socketio
+package socketiocli
 
 import (
 	"code.google.com/p/go.net/websocket"
