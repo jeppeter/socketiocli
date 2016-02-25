@@ -27,10 +27,18 @@ func NewSession(urls string) (*Session, error) {
 		logging.Errorf("error %s", err.Error())
 		return nil, err
 	}
-
 	shakequery := urlParser.handshake()
+	client := &http.Client{}
 	logging.Debugf("shakequery %s", shakequery)
-	response, err := http.PostForm(shakequery,url.Values{''})
+	req, err := http.NewRequest("GET", shakequery, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Del("Accept-Encoding")
+	req.Header.Add("Accept", "*/*")
+	req.Header.Add("Connection", "close")
+	response, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
