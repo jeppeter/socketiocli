@@ -35,7 +35,9 @@ func NewSession(urls string) (*Session, error) {
 		return nil, err
 	}
 
-	req.Header.Del("Accept-Encoding")
+	//req.Header.Set("Accept-Encoding", "identity")
+	//req.Header.Del("Accept-Encoding")
+	//req.Header.Set("User-Agent", "node-XMLHttpRequest")
 	req.Header.Add("Accept", "*/*")
 	req.Header.Add("Connection", "close")
 	response, err := client.Do(req)
