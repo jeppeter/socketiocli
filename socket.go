@@ -46,6 +46,7 @@ func Dial(url string) (*Socket, error) {
 	go func() {
 		heartbeatMsg := NewHeartbeat()
 		for {
+			logging.Debugf("will send %s", NewHeartbeat().String())
 			time.Sleep(session.HeartbeatTimeout - time.Second)
 			err := transport.Send(heartbeatMsg.String())
 			if err != nil {

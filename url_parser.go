@@ -2,6 +2,7 @@ package socketiocli
 
 import (
 	"fmt"
+	logging "github.com/jeppeter/go-logging"
 	"net/url"
 	"strings"
 )
@@ -31,10 +32,15 @@ func (u *urlParser) handshake() string {
 
 func (u *urlParser) websocket(sessionId string) string {
 	var host string
+	var retstr string
 	if u.parsed.Scheme == "https" {
 		host = strings.Replace(u.parsed.String(), "https://", "wss://", 1)
 	} else {
 		host = strings.Replace(u.parsed.String(), "http://", "ws://", 1)
 	}
-	return fmt.Sprintf("%s/socket.io/1/websocket/%s", host, sessionId)
+	//return fmt.Sprintf("%s/socket.io/1/websocket/%s", host, sessionId)
+	wsconf := newWSConfig(sessionId)
+	retstr = fmt.Sprintf("%s/socket.io/?%s", host, wsconf.formatQuery())
+	logging.Debugf("websocket %s", retstr)
+	return retstr
 }

@@ -1,9 +1,10 @@
 package socketiocli
 
 import (
-	"code.google.com/p/go.net/websocket"
 	"errors"
+	"github.com/gorilla/websocket"
 	"io"
+	"net/http"
 	"time"
 )
 
@@ -36,7 +37,9 @@ func newWsTransport(session *Session, url string) (*wsTransport, error) {
 	if err != nil {
 		return nil, err
 	}
-	ws, err := websocket.Dial(urlParser.websocket(session.ID), "", "http://localhost/")
+	header := make(http.Header)
+	header.Add("Sec-WebSocket-Extensions", "permessage-deflate; client_max_window_bits")
+	ws, _, err := websocket.DefaultDialer.Dial(urlParser.websocket(session.ID), header)
 	if err != nil {
 		return nil, err
 	}
@@ -46,17 +49,19 @@ func newWsTransport(session *Session, url string) (*wsTransport, error) {
 }
 
 func (wsTransport *wsTransport) Send(rawMsg string) error {
-	return websocket.Message.Send(wsTransport.Conn, rawMsg)
+	return wsTransport.Conn.WriteMessage(websocket.TextMessage, []byte(rawMsg))
+	//return websocket.Message.Send(wsTransport.Conn, rawMsg)
 }
 
 func (wsTransport *wsTransport) Receive() (string, error) {
 	var rawMsg string
 	wsTransport.Conn.SetReadDeadline(time.Now().Add(wsTransport.readTimeout))
-	err := websocket.Message.Receive(wsTransport.Conn, &rawMsg)
+	//err := websocket.Message.Receive(wsTransport.Conn, &rawMsg)
+	_, rbuf, err := wsTransport.Conn.ReadMessage()
 	if err != nil {
 		return "", err
 	}
-
+	rawMsg = string(rbuf)
 	return rawMsg, nil
 }
 
