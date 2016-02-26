@@ -38,7 +38,7 @@ func sessionCreate(resp *http.Response) (*Session, error) {
 		return nil, err
 	}
 
-	if slen != len(sessionVars[1]) {
+	if slen > len(sessionVars[1]) {
 		err = fmt.Errorf("slen %d != len(%d)", slen, len(sessionVars[1]))
 		logging.Errorf("%s", err.Error())
 		return nil, err
@@ -75,7 +75,6 @@ func sessionCreate(resp *http.Response) (*Session, error) {
 	intmilsec = int(milsec)
 	connectionTimeout := time.Duration(intmilsec) * time.Millisecond
 	supportedProtocols := strings.Split(supportprotocol, ",")
-	logging.Debugf("heartbeattimeout %s connectiontimeout %s supportedProtocols %s", heartbeattimeout, connectiontimeout, supportedProtocols)
 
 	return &Session{id, heartbeatTimeout, connectionTimeout, supportedProtocols}, nil
 

@@ -2,7 +2,7 @@ package socketiocli
 
 import (
 	"fmt"
-	logging "github.com/jeppeter/go-logging"
+	//logging "github.com/jeppeter/go-logging"
 	"net/url"
 	"strings"
 )
@@ -41,6 +41,5 @@ func (u *urlParser) websocket(sessionId string) string {
 	//return fmt.Sprintf("%s/socket.io/1/websocket/%s", host, sessionId)
 	wsconf := newWSConfig(sessionId)
 	retstr = fmt.Sprintf("%s/socket.io/?%s", host, wsconf.formatQuery())
-	logging.Debugf("websocket %s", retstr)
 	return retstr
 }
