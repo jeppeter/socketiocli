@@ -186,8 +186,9 @@ func (socket *Socket) Receive() (string, string, error) {
 }
 
 func (sock *Socket) SendMessage(state string, msg string) error {
-	s := fmt.Sprintf("%d[\"%s\",\"%s\"]", sock.curnumber, state, msg)
+	s := fmt.Sprintf("%d[\"%s\",%s]", sock.curnumber, state, msg)
 	sock.curnumber++
+	logging.Infof("send %s", s)
 	err := sock.Transport.Send(s)
 	return err
 }
