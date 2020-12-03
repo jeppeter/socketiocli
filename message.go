@@ -2,6 +2,7 @@ package socketiocli
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -21,6 +22,7 @@ func parseMessage(rawMsg string) (*Message, error) {
 		return nil, errors.New("Empty message")
 	}
 
+	fmt.Printf("parseMessage [%s]\n", parts[0])
 	msgType, err := strconv.Atoi(parts[0])
 	if err != nil {
 		return nil, err

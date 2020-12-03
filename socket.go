@@ -128,6 +128,7 @@ func (socket *Socket) parseMessage(msg string) (string, string, error) {
 	}
 	id := -1
 
+	fmt.Printf("session parseMessage[%s]\n", snum)
 	id, err := strconv.Atoi(snum)
 	if err != nil {
 		logging.Errorf("parse %s error (%s)", snum, err.Error())

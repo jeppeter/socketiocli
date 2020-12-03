@@ -6,6 +6,7 @@ import (
 	logging "github.com/jeppeter/go-logging"
 	"io/ioutil"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -21,19 +22,40 @@ type Session struct {
 }
 
 func sessionCreate(resp *http.Response) (*Session, error) {
+	var numexp *regexp.Regexp
+	var matchstrs []string
+	var sbody string
+	var sessionVars []string
+	var lefts string
+	var slen int
 	body, err := ioutil.ReadAll(resp.Body)
 	defer resp.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	/*now we should handle the body*/
+	sbody = string(body)
 
-	sessionVars := strings.SplitN(string(body), ":", 2)
+	numexp, err = regexp.Compile("^([0-9]+)\\{")
+	if err != nil {
+		return nil, err
+	}
+
+	/*now we should handle the body*/
+	fmt.Printf("body [%s]\n", sbody)
+	matchstrs = numexp.FindStringSubmatch(sbody)
+	if len(matchstrs) > 1 {
+		sessionVars = []string{}
+		sessionVars = append(sessionVars, matchstrs[1])
+		lefts = strings.Replace(sbody, sessionVars[0], "", 1)
+		sessionVars = append(sessionVars, lefts)
+	} else {
+		sessionVars = strings.SplitN(sbody, ":", 2)
+	}
 	if len(sessionVars) != 2 {
 		return nil, errors.New("Session variables is not valid")
 	}
 
-	slen, err := strconv.Atoi(sessionVars[0])
+	slen, err = strconv.Atoi(sessionVars[0])
 	if err != nil {
 		return nil, err
 	}
@@ -43,6 +65,7 @@ func sessionCreate(resp *http.Response) (*Session, error) {
 		logging.Errorf("%s", err.Error())
 		return nil, err
 	}
+
 	indexjson := strings.Index(sessionVars[1], "{")
 	if indexjson < 0 {
 		err = fmt.Errorf(" %s not valid json format ", sessionVars[1])
