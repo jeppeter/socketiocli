@@ -42,6 +42,7 @@ func Dial(url string) (*Socket, error) {
 		return nil, err
 	}
 
+	fmt.Printf("newTransport\n")
 	transport, err := newTransport(session, url)
 	if err != nil {
 		return nil, err
@@ -56,6 +57,7 @@ func Dial(url string) (*Socket, error) {
 	}()
 
 	s := fmt.Sprintf("%dprobe", sock.probenum)
+	fmt.Printf("send [%s]\n", s)
 	err = transport.Send(s)
 
 	if err != nil {
@@ -63,11 +65,13 @@ func Dial(url string) (*Socket, error) {
 		return nil, err
 	}
 
+	fmt.Printf("send over [%s]\n", s)
 	msg, err := sock.Transport.Receive()
 	if err != nil {
 		sock.Close()
 	}
 
+	fmt.Printf("receive [%s]\n", msg)
 	e, _, err := sock.parseMessage(msg)
 	if err != nil {
 		return nil, err

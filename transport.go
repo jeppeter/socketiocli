@@ -2,6 +2,7 @@ package socketiocli
 
 import (
 	"errors"
+	"fmt"
 	"github.com/gorilla/websocket"
 	"io"
 	"net/http"
@@ -37,8 +38,10 @@ func newWsTransport(session *Session, url string) (*wsTransport, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("make header\n")
 	header := make(http.Header)
-	header.Add("Sec-WebSocket-Extensions", "permessage-deflate; client_max_window_bits")
+	//header.Add("Sec-WebSocket-Extensions", "permessage-deflate; client_max_window_bits")
+	fmt.Printf("session id [%s]\n", urlParser.websocket(session.ID))
 	ws, _, err := websocket.DefaultDialer.Dial(urlParser.websocket(session.ID), header)
 	if err != nil {
 		return nil, err

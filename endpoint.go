@@ -1,6 +1,7 @@
 package socketiocli
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -28,8 +29,16 @@ func ParseEndpoint(rawEndpoint string) *Endpoint {
 
 // String returns the string representation of the endpoint.
 func (e Endpoint) String() string {
+	var s string
 	if e.Query != "" {
+		s = fmt.Sprintf("[%s,%s]", e.Path, e.Query)
+	} else {
+		s = fmt.Sprintf("[%s]", e.Path)
+	}
+	return s
+
+	/*if e.Query != "" {
 		return e.Path + "?" + e.Query
 	}
-	return e.Path
+	return e.Path*/
 }

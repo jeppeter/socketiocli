@@ -41,20 +41,30 @@ func parseMessage(rawMsg string) (*Message, error) {
 
 // String returns the string represenation of the Message.
 func (m Message) String() string {
-	raw := strconv.Itoa(m.Type)
+	/*
+		raw := strconv.Itoa(m.Type)
 
-	raw += ":" + m.ID
+		raw += ":" + m.ID
 
-	raw += ":"
+		raw += ":"
+		if m.Endpoint != nil {
+			raw += m.Endpoint.String()
+		}
+
+		if m.Data != "" {
+			raw += ":" + m.Data
+		}
+
+		return raw
+	*/
+	var s string
+	s = strconv.Itoa(m.Type)
 	if m.Endpoint != nil {
-		raw += m.Endpoint.String()
+		s += m.Endpoint.String()
+	} else {
+		s += "[]"
 	}
-
-	if m.Data != "" {
-		raw += ":" + m.Data
-	}
-
-	return raw
+	return s
 }
 
 // NewDisconnect returns a new disconnect Message.
